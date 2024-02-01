@@ -1,0 +1,12 @@
+idf_component_register(SRCS "BT/esp_ibeacon_api.c"
+                            "BT/ibeacon_demo.c"
+                            "main.c" 
+                            "MPU/i2c.c" 
+                            "MPU/MPU6500.c" 
+                            "MPU/timer_module" 
+                            "MPU/MahonyFilter.c" 
+                            "MPU/Madgwick.c"
+                            "BT/Beacon.c"
+                            "KalmanF/inovations.c"
+                            "KalmanF/1d_KF.c"
+                    INCLUDE_DIRS ".")
