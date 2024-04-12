@@ -17,7 +17,7 @@ function plot_serial_input_last_20()
     % Loop to read and update data until the figure is closed
     while ishandle(h)
         % Read the next line of data from the serial port
-        for attempt = 1:20
+        for attempt = 1:2000
             try
                 % Read the next line of data from the serial port
                 dataStr = readline(s);
@@ -49,16 +49,19 @@ function plot_serial_input_last_20()
             hPlot.YData = [hPlot.YData, newY]; % Append new y value
             
             % Keep only the last 20 results
-            if length(hPlot.XData) > 20
-                hPlot.XData = hPlot.XData(end-19:end);
-                hPlot.YData = hPlot.YData(end-19:end);
+            if length(hPlot.XData) > 5
+                hPlot.XData = hPlot.XData(end-4:end);
+                hPlot.YData = hPlot.YData(end-4:end);
             end
             
+% plot red start at -40,0 and at 40,0
+            plot(ax, [-40, 40], [0, 0], 'r*');
+
             % Automatically adjust axes limits
             % ax.XLim = [min(hPlot.XData)-1, max(hPlot.XData)+1];
             % ax.YLim = [min(hPlot.YData)-1, max(hPlot.YData)+1];
-            ax.XLim = [-50, 50];
-            ax.YLim = [-50, 50];
+            ax.XLim = [-100, 100];
+            ax.YLim = [-100, 100];
             % Refresh the plot
             drawnow;
 
