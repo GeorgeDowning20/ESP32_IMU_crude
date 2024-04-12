@@ -4,6 +4,7 @@
 #include "ISM/ISM.h"
 #include "../../IMU_I2c/IMU_I2c.hpp"
 #include "esp_err.h"
+#include "Calabration/Offsets.h"
 
 #define PI 3.14159265358979323846
 #define AccelGravity 9.80665
@@ -75,11 +76,21 @@ public:
     Vector3f GetGyro();
     Vector3f GetAccel();
 
+    void reloadOffsets();
+
     void SetSensitivities(void);
 
     IMU_I2C *I2c;
     MMC *mmc;
     ISM *ism;
+
+    Offsets offsets;
+
+    Vector3f mag;
+    Vector3f gyro;
+    Vector3f accel;
+
+    void applyOffsets();
 
 private:
     float MagSensitivity;

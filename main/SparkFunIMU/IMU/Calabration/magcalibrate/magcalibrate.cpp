@@ -11,7 +11,6 @@
 // Include files
 #include "magcalibrate.h"
 #include "chol.h"
-#include "coder_array.h"
 #include "magcal.h"
 #include "magcalibrate_data.h"
 #include "magcalibrate_rtwutil.h"
@@ -20,11 +19,11 @@
 #include "sqrt.h"
 #include "sqrtm.h"
 #include "svd.h"
+#include "coder_array.h"
 #include <algorithm>
 #include <cmath>
 #include <cstring>
 #include <stdio.h>
-
 // Function Definitions
 void magcalibrate(const double x[36], const double y[36], const double z[36],
                   double A[9], double b[3], double *expmfs)
@@ -280,7 +279,5 @@ void magcalibrate(const double x[36], const double y[36], const double z[36],
     b[2] = b_x[2];
     *expmfs = dA;
   }
-  //  Calibration coefficients
 }
 
-// End of code generation (magcalibrate.cpp)

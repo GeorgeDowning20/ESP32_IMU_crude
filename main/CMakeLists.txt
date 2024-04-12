@@ -5,8 +5,10 @@ idf_component_register(SRCS "main1.cpp"
                         "SparkFunIMU/IMU/MMC/MMC.cpp"
                         "SparkFunIMU/IMU/IMU.cpp"
                         "SparkFunIMU/Orientation/Madgwick.cpp"
-                        "SparkFunIMU/IMU/Calabration/magcaltest.cpp"
+                        "SparkFunIMU/IMU/Calabration/Offsets.cpp"
 
+
+                        "SparkFunIMU/IMU/Calabration/CalSensor.cpp"
 
                         "SparkFunIMU/IMU/Calabration/magcalibrate/magcalibrate.cpp"
                         # "SparkFunIMU/IMU/Calabration/magcalibrate/cat.cpp"

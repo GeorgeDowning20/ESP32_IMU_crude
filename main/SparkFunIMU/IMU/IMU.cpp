@@ -12,6 +12,8 @@ void IMU::init(IMU_I2C *i2c, MMC *mmc, ISM *ism)
     ism->init(i2c);
 
     SetSensitivities();
+
+     offsets.load();
 }
 
 void IMU::init()
@@ -28,6 +30,14 @@ void IMU::init()
     ism.init(&i2c);
 
     SetSensitivities();
+
+     offsets.load();
+}
+
+void IMU::reloadOffsets()
+{
+    offsets.load();
+    offsets.print();
 }
 
 
@@ -97,6 +107,36 @@ Vector3f IMU::GetAccel()
 
     return accel;
 }
+
+void IMU::applyOffsets()
+{
+
+    accel = GetAccel().g();
+    printf("Accel:%7.2f %7.2f %7.2f\t", accel.x, accel.y, accel.z);
+    double magnetude = sqrt(accel.x * accel.x + accel.y * accel.y + accel.z * accel.z);
+    double s_60s_error = 0.5*(1.0-magnetude)*3600;
+
+    printf("Magnetude: %f\t", magnetude);
+    printf("60s error: %f\t", s_60s_error);
+
+    accel.x -= offsets.accel.bias.x;
+    accel.y -= offsets.accel.bias.y;
+    accel.z -= offsets.accel.bias.z;
+
+    accel.x = accel.x*offsets.accel.rot.x[0] + accel.y*offsets.accel.rot.x[1] + accel.z*offsets.accel.rot.x[2];
+    accel.y = accel.x*offsets.accel.rot.y[0] + accel.y*offsets.accel.rot.y[1] + accel.z*offsets.accel.rot.y[2];
+    accel.z = accel.x*offsets.accel.rot.z[0] + accel.y*offsets.accel.rot.z[1] + accel.z*offsets.accel.rot.z[2];
+
+    accel.x *= offsets.accel.scale.x;
+    accel.y *= offsets.accel.scale.y;
+    accel.z *= offsets.accel.scale.z;
+
+    printf("Accel: %7.2f %7.2f %7.2f\t", accel.x, accel.y, accel.z);
+    magnetude = sqrt(accel.x * accel.x + accel.y * accel.y + accel.z * accel.z);
+    s_60s_error = 0.5*(1.0-magnetude)*3600;
+    printf("Magnetude: %f\t", magnetude);
+    printf("60s error: %f\n", s_60s_error);
+}   
 
 void IMU::SetSensitivities(void)
 {

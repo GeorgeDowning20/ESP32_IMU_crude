@@ -8,12 +8,14 @@
 #include "freertos/task.h"
 #include "SparkFunIMU/Orientation/Madgwick.h"
 
-#include "SparkFunIMU/IMU/Calabration/magcal.h"
+// #include "SparkFunIMU/IMU/Calabration/magcal.h"
 #include "esp_task_wdt.h"
+#include "SparkFunIMU/IMU/Calabration/CalSensor.h"
+
 #define WHO_AM_I 0x6B
 
 IMU imu;
-Vector3f acc ;
+Vector3f acc;
 Vector3f gyro;
 Vector3f mag;
 
@@ -47,8 +49,9 @@ void task2(void *pvParameter)
 
         float roll, pitch, yaw;
         eulerAngles(q_est, &roll, &pitch, &yaw);
-
-        printf("Roll: %f, Pitch: %f, Yaw: %f\n", roll, pitch, yaw);
+        
+        imu.applyOffsets();
+        // printf("Roll: %f, Pitch: %f, Yaw: %f\n", roll, pitch, yaw);
         // printf("acc: %f %f %f\n", acc.x, acc.y, acc.z);
         vTaskDelayUntil(&xLastWakeTime, xFrequency); // 5Hz
     }
@@ -57,31 +60,37 @@ void task2(void *pvParameter)
 extern "C" void app_main()
 {
     printf("Hello world espressif\n");
-// esp_task_wdt_delete(NULL);
+    // esp_task_wdt_delete(NULL);
 
-// Your long-running operation here
+    // Your long-running operation here
 
-// Re-enable the watchdog timer
-// esp_task_wdt_add(NULL);
-// esp_err_t err = esp_task_wdt_delete(xTaskGetCurrentTaskHandle());
-// if (err != ESP_OK) {
-//     printf("Task was not being monitored by the watchdog timer\n");
-// }
+    // Re-enable the watchdog timer
+    // esp_task_wdt_add(NULL);
+    // esp_err_t err = esp_task_wdt_delete(xTaskGetCurrentTaskHandle());
+    // if (err != ESP_OK) {
+    //     printf("Task was not being monitored by the watchdog timer\n");
+    // }
 
-mainmagcal();
+    // mainmagcal();
 
+    imu.init();
 
-    while(1){
-        printf("end\n");
-//delay 1s
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
+    CalSesnsor cal(&imu);
+    // cal.run();
+    // cal.CalibrateAccel(); 
+    cal.offsets.load();
+    cal.offsets.print();
 
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
 
-    };
+    printf("end\n");
 
-    
+    // while (1)
+    // {
+    // };
+
     // imu.init();
 
-    // xTaskCreate(&task1, "Task 1", 2048, NULL, 1, NULL);
-    // xTaskCreate(&task2, "Task 2", 2048, NULL, 1, NULL);
+     xTaskCreate(&task1, "Task 1", 2048, NULL, 1, NULL);
+     xTaskCreate(&task2, "Task 2", 2048, NULL, 1, NULL);
 }
